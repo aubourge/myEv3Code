@@ -47,8 +47,8 @@ int main()
 	printf("command: opOUTPUT_READ\n");
 	motor_command[0] = opOUTPUT_READ;
 	motor_command[1] = MOTOR;
-	write(file,motor_command,6);
-	read(file,motor_readBack,6);
+	write(file, motor_command, 2);
+	read(file, motor_readBack, 6);
 	
 	displayArray("Read", motor_readBack, 6);
 
@@ -59,8 +59,8 @@ int main()
 	printf("command: opOUTPUT_POWER\n");
 	motor_command[0] = opOUTPUT_POWER;
 	motor_command[2] = SPEED;
-	write(file,motor_command,2);
-	read(file,motor_readBack,2);
+	write(file, motor_command, 3);
+	read(file, motor_readBack, 6);
 
 	displayArray("Write", motor_command, 6);
 	displayArray("Read", motor_readBack, 6);
@@ -71,8 +71,8 @@ int main()
 	printf("command: opOUTPUT_POWER\n");
 	motor_command[0] = opOUTPUT_POWER;
 	motor_command[2] = SPEED2;
-	write(file,motor_command,2);
-	read(file,motor_readBack,2);
+	write(file, motor_command, 3);
+	read(file, motor_readBack, 6);
 
 	displayArray("Write", motor_command, 6);
 	displayArray("Read", motor_readBack, 6);
