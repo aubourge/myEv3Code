@@ -83,7 +83,8 @@ int main()
 	printf("command: opOUTPUT_STOP\n");
 	motor_command[0] = opOUTPUT_STOP;
 	motor_command[1] = MOTOR;
-	write(file,motor_command,2);
+	motor_command[2] = 0;
+	write(file,motor_command,3);
 
 	displayArray("Write", motor_command, 6);
 	// Close the device file
