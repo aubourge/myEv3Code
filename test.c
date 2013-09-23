@@ -4,12 +4,19 @@
 #include <stdlib.h>
 #include "exp/lms2012.h"
 #include "exp/c_output.h"
+#include  <sys/mman.h>
+
 
 /* === Typedefs === */
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned int u32;
 
+struct motorReadData {
+	int tachoCnt;
+	int speed;
+	int tachoSensor;
+};
 
 /* === Constants === */
 const char MOTOR = 0x1;
@@ -22,16 +29,20 @@ const int SPEED2 = 100;
 int _fileWr;
 int _fileRd;
 
+int *_ibuff;
+
+void displayIntArray(char* name, int* data, int length) ;
 
 int init()
 {
 	// Open the device file for writing
-	if((_fileWr = open(PWM_DEVICE_NAME, O_WRONLY)) == -1)
+	if((_fileWr = open(PWM_DEVICE_NAME, O_RDWR, 0)) == -1)
 		return -1; //Failed to open device
 	//
 	// Open the device file for reading
-	if((_fileRd = open(MOTOR_DEVICE_NAME, O_RDWR)) == -1)
+	if((_fileRd = open(MOTOR_DEVICE_NAME, O_RDWR, 0)) == -1)
 		return -1; //Failed to open device
+	_ibuff = (int*)mmap(0, 96, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, _fileRd, 0); 
 
 	printf("Init SUCCESS: pointer Wr: %#08x Rd: %#08x\n", _fileWr, _fileRd);
 
@@ -88,6 +99,16 @@ void motorSetPower(char portMap, s8 power)
 	write(_fileWr, cmd, 3);
 }
 
+void motorSetSpeed(char portMap, u8 speed)
+{
+	char cmd[3];
+	cmd[0] = opOUTPUT_SPEED;
+	cmd[1] = portMap;
+	cmd[2] = speed;
+
+	write(_fileWr, cmd, 3);
+}
+
 void motorStop(char portMap, u8 brake)
 {
 	char cmd[3];
@@ -115,15 +136,23 @@ u8 motorGetType(char portMap)
 }
 
 
-void motorRead(char portMap, char* readData)
+struct motorReadData motorRead(port)
 {
-	char cmd[2];
-	cmd[0] = opOUTPUT_READ;
-	cmd[1] = portMap;
-	read(_fileRd, readData, 5);
+	//displayIntArray("Read", _ibuff, 12);
+	return (struct motorReadData) {_ibuff[3*port], _ibuff[3*port+1], _ibuff[3*port+2]};
 }
 
-void displayArray(char* name, char* data, int length) 
+void displayCharArray(char* name, char* data, int length) 
+{
+	printf ("%s ", name);
+	int i;
+	for (i=0; i < length; i++) {
+		printf("%x ", data[i]);
+	}
+	printf("\n");
+}
+
+void displayIntArray(char* name, int* data, int length) 
 {
 	printf ("%s ", name);
 	int i;
@@ -134,13 +163,8 @@ void displayArray(char* name, char* data, int length)
 }
 
 
-int main()
+void test1() 
 {
-	printf ("Size of int: %d\n", sizeof(int));
-	printf ("Size of ushort: %d\n", sizeof(unsigned short));
-	printf ("Size of u8: %d\n", sizeof(u8));
-	if (init() == -1) return -1; 
-
 	motorStart(MOTOR);
 	motorResetRef(MOTOR);
 	//motorSetPower(MOTOR, 10);
@@ -149,12 +173,60 @@ int main()
 	sleep(1);
 	motorStop(MOTOR, 0);
 
-	printf ("Type: %d\n", motorGetType(MOTOR));
+	//printf ("Type: %d\n", motorGetType(MOTOR));
 
-	char readData[10];
+	//char readData[10];
 
-	displayArray("Read: ", readData, 10);
-	printf("%#08x %#08x\n", *(u32*)_fileWr, *(u32*)_fileRd);
+	//displayArray("Read: ", readData, 10);
+	//printf("%#08x %#08x\n", *(u32*)_fileWr, *(u32*)_fileRd);
+}
+
+
+void test2()
+{
+	struct motorReadData data; 
+
+	motorResetRef(MOTOR);
+	motorStart(MOTOR);
+
+	int timeOut = 100;
+
+	while(--timeOut) {
+		data = motorRead(0);
+		printf ("speed: %d, count: %d, sensor %d\n", data.speed, data.tachoCnt, data.tachoSensor);
+		//motorGetType(MOTOR);
+
+		//motorSetPower(MOTOR, -(s8)data.tachoCnt);
+		sleep(1);
+		//motorSetSpeed(MOTOR, 10);
+	}
+	motorStop(MOTOR, 0);
+}
+
+
+void test3()
+{
+	motorStart(MOTOR);
+	motorSetPower(MOTOR, 10);
+	sleep(3);
+	motorStop(MOTOR, 1);
+	motorStop(MOTOR, 0);
+}
+
+void test4()
+{
+
+}
+
+int main()
+{
+	if (init() == -1) return -1; 
+
+	// test1();
+	test2();
+
+	//motorSetPower(MOTOR, 0);
+	//motorStop(MOTOR, 0);
 
 	finish();
 	return 0;
