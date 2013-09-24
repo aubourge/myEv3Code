@@ -33,7 +33,6 @@ TARGET_OS=QTARGET_OS_LINUX
 ## Include configuration makefile
 #include $(SEQ_BUILD_ROOT)/defs.cfg.mk
 
-SEQ_CLI=1
 
 #***************************************************************
 # OS paths

@@ -21,11 +21,4 @@ fw:
 	$(MAKE) -f Private.mk fw
 
 
-.PHONY: clean realclean realclean_doxygen clean_doxygen tags ctags etags docs clean_os_lib
-
-clean: clean_doxygen clean_tags
-	$(MAKE) -f Private.mk clean
-
-tags etags ctags cscope clean_tags:
-	$(MAKE) -f Private.mk $@
-
+.PHONY: clean tags ctags etags docs clean_os_lib

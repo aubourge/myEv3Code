@@ -189,45 +189,6 @@ CC_FLAGS += --std=gnu99
 # Optimization
 CPP_OPT += -O$(OPTIM)
 
-ifeq ($(SEQ_SIMULATION),1)
-
-# Force debug mode in simulation unless it is no required by user
-ifneq ($(DEBUG),0)
-CPP_OPT += -g
-endif
-
-else
-
-# Release compilation: never put debug information into a release
-ifeq ($(DEBUG),1)
-ifndef RELEASE
-ifndef SEQ_LIB_NO_DEBUG
-CPP_OPT += -g
-endif
-endif
-endif
-
-endif
-
-# ----------------------------------------
-# OS dependent defines
-# ----------------------------------------
-# eCos
-ifeq ($(SEQ_OS),eCos)
-CCC_FLAGS += -fweak
-CCC_FLAGS += -D_CLOCK_T_='unsigned long' # workaround
-CPP_INC   += -I$(ECOS_OBJ_DIR)/install/include 
-
-ifdef BUILD_APP
-include $(ECOS_OBJ_DIR)/install/include/pkgconf/ecos.mak
-endif
-endif
-
-# ----------------------------------------
-# Platform dependant includes
-# ----------------------------------------
-
-CPP_INC   += -I$(SEQ_ROOT)/$(SEQ_BSP)/board/arch/$(SEQ_CPU)/$(SEQ_CHIP)$(SEQ_CUSTOM)-$(SEQ_PLATFORM)/
 
 # ----------------------------------------
 # Compilation flags
@@ -240,12 +201,6 @@ CPP_FLAGS  = $(CPP_INC) $(CPP_CPU) $(CPP_OS) $(CPP_DEFINES) $(CPP_OPT)
 CC_FLAGS  += $(CPP_FLAGS) -Wall -Werror-implicit-function-declaration -Wno-unused 
 CCC_FLAGS += $(CPP_FLAGS) -Wall 
 
-ifeq ($(SEQ_OS),eCos)
-# use of -include to simply ignore absence of ecos.mak before eCos was built
--include $(ECOS_MAK)
-CC_FLAGS += $(filter-out -Woverloaded-virtual, $(filter-out -fno-rtti, $(ECOS_GLOBAL_CFLAGS)))
-CCC_FLAGS += $(filter-out -Wstrict-prototypes, $(ECOS_GLOBAL_CFLAGS))
-endif
 
 # ----------------------------------------
 # Link flags
@@ -255,39 +210,18 @@ endif
 LD_PATH = $(patsubst %,-L%,$(LIBPATH))
 
 LD_FLAGS ?=
-ifeq ($(SEQ_OS),eCos)
-LD_FLAGS += $(ECOS_GLOBAL_LDFLAGS)
-endif
 
 ifneq ($(SEQ_LINKERSCRIPT),)
 LD_FLAGS += -T$(SEQ_LINKERSCRIPT)
 endif
 
-# Define loadable state of the build application
-ifeq ($(findstring $(SEQ_OS),linuxDes cygwinDes eCos),$(SEQ_OS))
-SEQ_BUILD_LOADBLE_OBJECT = 0
-else
 SEQ_BUILD_LOADBLE_OBJECT = 1
-endif
 
 #***************************************************************
 # External Libraries
 #***************************************************************
 
-TGT_DEFAULT_EXTERNAL_LIBS ?=
-
-# ----------------------------------------
-# THP
-# ----------------------------------------
-
-ifneq ($(THP_SVR_CC_OBJ),) 
-CPP_INC += -I$(THP_SVR_CC_OBJ)
-endif
-
-ifeq ($(SEQ_GCCXML), 1)
-THP_GCCXML_DEFINES = $(CPP_DEFINES) -D__arm__ -D __i386__
-endif
-
+TGT_DEFAULT_EXTERNAL_LIBS =
 
 #***************************************************************
 # Paths to compilation chain tools
@@ -302,15 +236,6 @@ CP      = cp
 MUNCH   = munch
 FIND    = find
 SED     = sed
-
-ifeq ($(SEQ_HOST),windows32)
-MUNCH  = munch.bat
-FIND   = find.exe
-SED    = sed.exe
-endif
-
-# SIDL Compiler Kit
-SIDL_CK = $(SEQ_ROOT)/etc/tools/sidlck.py
 
 #***************************************************************
 # Make related definitions
