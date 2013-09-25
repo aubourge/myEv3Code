@@ -14,4 +14,4 @@ First milestone would be to create an arm oscillation with color sensor readback
 I understand I might be re-inventing the wheel here, but at least I would have improved my understanding of the Lego EV3 
 system.
 
-Have fun reading my code a feel fre to comment / propose things !
+Have fun reading my code a feel free to comment / propose things !
