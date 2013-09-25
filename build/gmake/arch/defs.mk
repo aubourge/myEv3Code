@@ -19,7 +19,7 @@ CC_FLAGS  += $(CPP_FLAGS) -Wall -Werror-implicit-function-declaration -Wno-unuse
 CC_FLAGS += -mstructure-size-boundary=8
 CC_FLAGS += -fgnu89-inline
 CCC_FLAGS += $(CPP_FLAGS) -Wall -mstructure-size-boundary=8
-LD_FLAGS += $(foreach f,$(TEST_STUBS),-wrap $(f)) -EB
+LD_FLAGS += $(foreach f,$(TEST_STUBS),-wrap $(f))
 CPP_OS+=-DSQN_BYTE_BIG_ENDIAN
 
 #***************************************************************
