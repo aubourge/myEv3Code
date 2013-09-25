@@ -331,46 +331,6 @@ realclean_lib: clean_lib
             $(RM) $$i ; \
 	  done
 
-# ------------------------------------------
-# Rules to build/clean an ECOS library
-# ------------------------------------------
-
-.PHONY: build_ecos_lib clean_ecos_lib
-
-ECOS_HAL=$(ECOS_REPOSITORY)/hal
-ECOS_DEVS=$(ECOS_REPOSITORY)/devs
-
-SEQ_HAL_NAME=sqnwimax
-
-build_ecos_lib: $(ECOS_MAK)
-
-$(ECOS_MAK):
-	@ echo "[$(CPU)] Building ECOS libraries..."
-	@ echo "[$(CPU)] Copy package definition and configuration"
-	@ $(MKDIR) -p $(ECOS_OBJ_DIR)
-	@ $(CP) $(ECOS_CFG_FILE) $(ECOS_OBJ_DIR)/ecos.ecc
-ifeq ($(SEQ_ARCH), nios2)
-	@ cd $(ECOS_OBJ_DIR) && nios2configgen --ptf=$(NIOS2_CONFIG_FILE) --cpu=cpu
-endif # ($(SEQ_ARCH), nios2)
-
-	@ echo "[$(CPU)] Generate ECOS makefiles"
-	cd $(ECOS_OBJ_DIR) && ecosconfig tree && ecosconfig resolve
-
-	@ echo "[$(CPU)] Compile ECOS libraries"
-	@ $(MAKE) -C $(ECOS_OBJ_DIR)
-
-	@ cd $(SEQ_ROOT)
-
-
-clean_ecos_lib:
-	@ echo "[$(CPU)] Erasing ECOS libraries..."
-	@ $(RM) -rf $(ECOS_OBJ_DIR)					\
-		$(ECOS_HAL)/$(SEQ_ARCH)/$(SEQ_HAL_NAME)			\
-		$(ECOS_DEVS)/spi/$(SEQ_ARCH)/$(SEQ_HAL_NAME)		\
-		$(ECOS_DEVS)/spi/$(SEQ_ARCH)/$(SEQ_HAL_NAME)_devices	\
-		$(ECOS_DEVS)/serial/$(SEQ_ARCH)/$(SEQ_HAL_NAME)		\
-		$(ECOS_DEVS)/flash/$(SEQ_ARCH)/$(SEQ_HAL_NAME)		\
-		$(ECOS_DEVS)/eth/$(SEQ_ARCH)/$(SEQ_HAL_NAME)
 
 # ------------------------------------------
 # Rules to build/clean application
@@ -416,53 +376,6 @@ $(APP): $(LIB_OBJS) $(MODULE_LIB_DEP)
 	@ echo KEEP_OBJ_DEP := $(KEEP_OBJ_DEP) >| $(OBJ_DIR)/keep.mk
 
 endif # ifeq ($(SEQ_BUILD_LOADBLE_OBJECT),1)
-
-
-# ---------------------------------------------
-# Rules to build tags
-# ---------------------------------------------
-
-.PHONY: tags ctags etags generic_tags clean_tags cscope
-ctags: TAGS_FILE=$(SEQ_ROOT)/tags
-ctags: TAGS_COMMAND=ctags-exuberant -f $(TAGS_FILE)
-ctags: generic_tags
-ctags:
-	@ $(SED) -i -e 's|$(SEQ_ROOT)/||' $(TAGS_FILE)
-tags:  etags
-etags: TAGS_FILE=$(SEQ_ROOT)/TAGS
-etags: TAGS_COMMAND=ctags-exuberant -e -f $(TAGS_FILE)
-etags: generic_tags
-generic_tags:
-	@ echo "Force $(TAGS_FILE) file rebuild"
-	@ find $(SEQ_ROOT) -type f \( -regex '.*\.\(h\|c\|cc\|cpp\|inline\|ts\|py\)$$' \) | \
-		$(TAGS_COMMAND) -L '-' \
-		--extra=+qf \
-		-I 'SQN_STRUCT=struct,SQN_ENUM=enum,SQN_UNION=struct,STK_NEW=new,STK_NEW_ADV=new' \
-		-I 'SQN,SQNC,UNIT_TEST,UNIT_TEST_DECLARE,SQN_UNION_BEGIN,SQN_UNION_END,SQN_UNION_CASE,SQN_BITMAP_BIT,SQN_BITMAP_DEF' \
-		--regex-C++='/SQNC\(([^()]+)\)/SQN_\1/v/e' \
-		--regex-C++='/SQN_INFO\(([^()]+)\)/sqn\1Info/v/e' \
-		--regex-C++='/SQN_DESCR\(([^()]+)\)/sqn\1Descr/v/e' \
-		--regex-C++='/SQN\(([^()]+)\)[[:space:]]*\{/sqn\1/v/e' \
-		--regex-C++='/typedef.+SQN\(([^()]+)\)(\[[^[:space:]]*\]|)[[:space:]]*;/sqn\1/v/e' \
-		--regex-C++='/UNIT_TEST\(([^,]+)\)/runTest/v/e' \
-		--regex-C++='/UNIT_TEST\(([^,]+)\)/\1::runTest/v/e' \
-		--regex-C++='/UNIT_TEST_DECLARE\(([^,]+),/\1/v/e' \
-		--regex-C++='/SQN_(UNION_BEGIN|BITMAP_DEF)\(SQN\(([^()]+)\),/sqn\2/v/e' \
-		--regex-C++='/SQN_(UNION_BEGIN|BITMAP_DEF)\(SQN\(([^()]+)\),/\2/v/e' \
-		--regex-C++='/SQN_UNION_BEGIN\(SQN\(([^()]+)\),/sqn\1::d/v/e' \
-		--regex-C++='/SQN_UNION_BEGIN/d/v/e' \
-		--regex-C++='/SQN_UNION_END/v/v/e' \
-		--regex-C++='/SQN_BITMAP_BIT\([^,]+,[[:space:]]*([^,]+)[[:space:]]*,/SQN_\1/v/e' \
-		--langmap=C++:+.inline
-
-clean_tags:
-	rm -f $(SEQ_ROOT)/tags $(SEQ_ROOT)/TAGS ${SEQ_ROOT}/cscope.out
-
-cscope:
-	@ find $(SEQ_ROOT) -type f \( -regex '.*\.\(h\|c\|cc\|cpp\|inline\)$$' \) | \
-		cscope -b -f ${SEQ_ROOT}/cscope.out -i '-'
-
-
 
 # ---------------------------------------------
 # Dependencies
