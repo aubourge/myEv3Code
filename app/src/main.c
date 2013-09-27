@@ -22,9 +22,9 @@ void test1()
 {
 	motorStart(MOTOR);
 	motorResetRef(MOTOR);
-	//motorSetPower(MOTOR, 10);
+	motorSetPower(MOTOR, 10);
 	sleep(1);
-	//motorSetPower(MOTOR, 20);
+	motorSetPower(MOTOR, 20);
 	sleep(1);
 	motorStop(MOTOR, 0);
 
@@ -37,6 +37,7 @@ void test1()
 }
 
 
+
 void test2()
 {
 	struct motorReadData data; 
@@ -44,15 +45,24 @@ void test2()
 	motorResetRef(MOTOR);
 	motorStart(MOTOR);
 
-	int timeOut = 20;
+	int timeOut = 200;
 
-	while(--timeOut) {
+	while(1) {
+		motorStart(MOTOR);
+	
 		data = motorRead(0);
-		printf ("timeout: %d \tspeed: %d, count: %d, sensor %d\n", timeOut, data.speed, data.tachoCnt, data.tachoSensor);
-		//motorGetType(MOTOR);
+		
+		printf ("timeout: %d \tspeed: %d, count: %d, sensor: %d\n", timeOut, data.speed, data.tachoCnt, data.tachoSensor);
 
-		//motorSetPower(MOTOR, -(s8)data.tachoCnt);
-		sleep(1);
+		if (data.tachoSensor < -5) {
+			motorSetPower(MOTOR, -data.tachoSensor*2);
+		} else if (data.tachoSensor > 5) {
+			motorSetPower(MOTOR, -data.tachoSensor*2);
+		} else {
+			motorStop(MOTOR, 0);
+		}
+
+		usleep(10000);
 		//motorSetSpeed(MOTOR, 10);
 	}
 	motorStop(MOTOR, 0);
@@ -77,7 +87,7 @@ int main()
 {
 	if (init() == -1) return -1; 
 
-	// test1();
+	//test1();
 	test2();
 
 	//motorSetPower(MOTOR, 0);
