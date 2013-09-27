@@ -1,4 +1,4 @@
-
+#if 0
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,20 +75,37 @@ void test3()
 	motorSetPower(MOTOR, 10);
 	sleep(3);
 	motorStop(MOTOR, 1);
+	sleep(3);
 	motorStop(MOTOR, 0);
 }
 
 void test4()
 {
+	// sensor read test
 
+	int _fileRd;
+	int *_ibuff;
+	int timeOut = 200;
+
+	if((_fileRd = open(ANALOG_DEVICE_NAME, O_RDWR, 0)) == -1)
+		return; //Failed to open device
+	_ibuff = (int*)mmap(0, 96, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, _fileRd, 0); 
+
+	while (timeOut--) {
+		displayIntArray("Read", _ibuff, 12);
+		usleep(100000);
+	}
 }
 
 int main()
 {
 	if (init() == -1) return -1; 
 
+int _fileRd;
 	//test1();
-	test2();
+	//test2();
+	//test3();
+	test4();
 
 	//motorSetPower(MOTOR, 0);
 	//motorStop(MOTOR, 0);
@@ -96,3 +113,44 @@ int main()
 	finish();
 	return 0;
 }
+#else
+
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/mman.h>
+#include <os.h>
+#include "lms2012.h"
+//The ports are designated as PORT_NUMBER-1
+const char PORT = 0x0;
+const int MAX_SAMPLES  = 100;
+
+int main()
+{
+	int file;
+	UART     *pUart;
+	int i;
+	//Open the device file
+	if((file = open(UART_DEVICE_NAME, O_RDWR | O_SYNC)) == -1) {
+		printf("Failed to open device\n");
+		return -1;
+	}
+
+	pUart  =  (UART*)mmap(0, sizeof(UART), PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, file, 0);
+	printf("Device is ready\n");
+
+	if (pUart == MAP_FAILED) {
+		printf("Failed to map device\n");
+		return -1;
+	}
+
+	for(i = 0;i<MAX_SAMPLES;i++) {
+		printf("UART Value: %d\n", (unsigned char)pUart->Raw[PORT][pUart->Actual[PORT]][0]);
+		os.sleep(1,0);
+	}
+
+	// Close the device file
+	printf("Clossing device\n");
+	close(file);
+	return 0;
+}
+#endif
