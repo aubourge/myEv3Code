@@ -22,6 +22,7 @@ void motorStart(char portMap);
 void motorResetRef(char portMap);
 void motorSetPos(char portMap, int position);
 void motorSetPower(char portMap, s8 power);
+void motorSetSpeed(char portMap, s8 speed);
 void motorStop(char portMap, u8 brake);
 u8 motorGetType(char portMap);
 struct motorReadData motorRead(int port);

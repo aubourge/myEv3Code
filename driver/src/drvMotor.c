@@ -84,6 +84,16 @@ void motorSetPower(char portMap, s8 power)
 	write(_fileWr, cmd, 3);
 }
 
+void motorSetSpeed(char portMap, s8 speed)
+{
+	char cmd[3];
+	cmd[0] = opOUTPUT_SPEED;
+	cmd[1] = portMap;
+	cmd[2] = speed;
+
+	write(_fileWr, cmd, 3);
+}
+
 void motorStop(char portMap, u8 brake)
 {
 	char cmd[3];
