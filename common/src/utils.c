@@ -27,7 +27,7 @@ void displayIntArray(char* name, int* data, int length)
 	printf ("%s ", name);
 	int i;
 	for (i=0; i < length; i++) {
-		printf("%x ", data[i]);
+		printf("%d ", data[i]);
 	}
 	printf("\n");
 }
