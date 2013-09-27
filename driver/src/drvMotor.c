@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include "lms2012.h"
 #include "c_output.h"
 #include "types.h"
@@ -26,6 +27,7 @@ int init()
 	// Open the device file for reading
 	if((_fileRd = open(MOTOR_DEVICE_NAME, O_RDWR, 0)) == -1)
 		return -1; //Failed to open device
+	_ibuff = (int*)mmap(0, 96, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, _fileRd, 0); 
 
 	printf("Init SUCCESS: pointer Wr: %#08x Rd: %#08x\n", _fileWr, _fileRd);
 

@@ -44,11 +44,11 @@ void test2()
 	motorResetRef(MOTOR);
 	motorStart(MOTOR);
 
-	int timeOut = 100;
+	int timeOut = 20;
 
 	while(--timeOut) {
 		data = motorRead(0);
-		printf ("speed: %d, count: %d, sensor %d\n", data.speed, data.tachoCnt, data.tachoSensor);
+		printf ("timeout: %d \tspeed: %d, count: %d, sensor %d\n", timeOut, data.speed, data.tachoCnt, data.tachoSensor);
 		//motorGetType(MOTOR);
 
 		//motorSetPower(MOTOR, -(s8)data.tachoCnt);

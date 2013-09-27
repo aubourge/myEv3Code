@@ -215,13 +215,13 @@ ifneq ($(SEQ_LINKERSCRIPT),)
 LD_FLAGS += -T$(SEQ_LINKERSCRIPT)
 endif
 
-SEQ_BUILD_LOADBLE_OBJECT = 1
+SEQ_BUILD_LOADBLE_OBJECT = 0
 
 #***************************************************************
 # External Libraries
 #***************************************************************
 
-TGT_DEFAULT_EXTERNAL_LIBS =
+TGT_DEFAULT_EXTERNAL_LIBS ?=
 
 #***************************************************************
 # Paths to compilation chain tools
