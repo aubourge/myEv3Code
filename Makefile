@@ -3,8 +3,12 @@ ifndef SEQ_BUILD
 export SEQ_BUILD = build
 endif
 
+ifndef EV3_BUILD
+export EV3_BUILD = build
+endif
+
 ifdef SEQ_ROOT
-include $(SEQ_ROOT)/$(SEQ_BUILD)/gmake/defs.mk
+include $(SEQ_ROOT)/$(EV3_BUILD)/gmake/defs.mk
 else
 abort:
 	@ echo "SEQ_ROOT is not defined. Aborting"
