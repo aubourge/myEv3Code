@@ -1,16 +1,20 @@
+#include "drvAnalogPort.h"
+#include "lms2012.h"
+#include <stdio.h>
+#include <sys/ioctl.h>
+
+void setMode(int port, u8 mode)
+{
+	ioctl(UART_SET_CONN, devCon(port, CONN_INPUT_UART, 0, mode));
+	_mode[port] = mode;
+}
 
 
-
-void drvUartInit(uartPort port)
+void drvUartInit(int port)
 {
 	setMode(port, 0);
 }
 
-void setMode(uartPort port, u8 mode)
-{
-	ioctl(UARST_SET_CONN, devCon(port, CONN_INPUT_UART, 0, mode)
-	_mode[port] = mode;
-}
 
 void ioctl()
 

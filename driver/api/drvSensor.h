@@ -1,3 +1,7 @@
+#ifndef DRV_SENSOR_H
+#define DRV_SENSOR_H
+
+#include "types.h"
 // Constants
 
 const int PORTS = 4;
@@ -11,7 +15,7 @@ const int CONN_INPUT_DUMB = 121;  //!< Connection type is LMS2012 input device w
 const int CONN_INPUT_UART = 122;  //!< Connection type is LMS2012 UART sensor
 const int CONN_OUTPUT_DUMB= 123;  //!< Connection type is LMS2012 output device with ID resistor^
 const int CONN_OUTPUT_INTELLIGENT= 124;  //!< Connection type is LMS2012 output device with communication
-const int CONN_OUTPUT_TACHO= 125;  //!< Connection type is LMS2012 tacho motor with series ID resistance
+const int CONN_OUTPUT_TACHO = 125;  //!< Connection type is LMS2012 tacho motor with series ID resistance
 const int CONN_NONE       = 126;  //!< Port empty or not available
 const int CONN_ERROR      = 127;  //!< Port not empty and type is invalid^M
 
@@ -35,22 +39,24 @@ const int TYPE_ERROR                    = 127;  //!< Port not empty and type is 
 
 const int UART_MAX_MODES = 8;
 const int MAX_DEVICE_DATALENGTH = 32;
-const int IIC_DATA_LENGTH = MAX_DEVICE_DATALENGTH;
+const int IIC_DATA_LENGTH = 32;
 const int OK = 0;
 const int BUSY = 1;
 const int FAIL = 2;
 const int STOP = 4;
 
-const byte CMD_NONE = (byte)'-';
-const byte CMD_FLOAT = (byte)'f';
-const byte CMD_SET = (byte)'0';
-const byte CMD_COL_COL = 0xd;
-const byte CMD_COL_RED = 0xe;
-const byte CMD_COL_GRN = 0xf;
-const byte CMD_COL_BLU = 0x11;
-const byte CMD_COL_AMB = 0x12;
-const byte CMD_PIN1 = 0x1;
-const byte CMD_PIN5 = 0x2;
+const u8 CMD_NONE = (u8)'-';
+const u8 CMD_FLOAT = (u8)'f';
+const u8 CMD_SET = (u8)'0';
+const u8 CMD_COL_COL = 0xd;
+const u8 CMD_COL_RED = 0xe;
+const u8 CMD_COL_GRN = 0xf;
+const u8 CMD_COL_BLU = 0x11;
+const u8 CMD_COL_AMB = 0x12;
+const u8 CMD_PIN1 = 0x1;
+const u8 CMD_PIN5 = 0x2;
 
 const int ADC_REF = 5000; // 5.0 Volts
 const int ADC_RES = 4095;
+
+#endif // DRV_SENSOR_H
