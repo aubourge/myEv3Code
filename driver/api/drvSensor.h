@@ -6,6 +6,7 @@
 
 const int PORTS = 4;
 
+#if 0 // declared in lms_2012.h
 const int CONN_UNKNOWN    = 111;  //!< Connection is fake (test)
 const int CONN_DAISYCHAIN = 117;  //!< Connection is daisy chained
 const int CONN_NXT_COLOR  = 118;  //!< Connection type is NXT color sensor
@@ -35,15 +36,18 @@ const int TYPE_TERMINAL                 = 124;  //!< Port is connected to a term
 const int TYPE_UNKNOWN                  = 125;  //!< Port not empty but type has not been determined
 const int TYPE_NONE                     = 126;  //!< Port empty or not available
 const int TYPE_ERROR                    = 127;  //!< Port not empty and type is invalid
+#endif
 
 
 const int UART_MAX_MODES = 8;
 const int MAX_DEVICE_DATALENGTH = 32;
 const int IIC_DATA_LENGTH = 32;
+#if 0 // declared in bytecodes.h
 const int OK = 0;
 const int BUSY = 1;
 const int FAIL = 2;
 const int STOP = 4;
+#endif
 
 const u8 CMD_NONE = (u8)'-';
 const u8 CMD_FLOAT = (u8)'f';

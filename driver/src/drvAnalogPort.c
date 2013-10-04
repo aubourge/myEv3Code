@@ -4,7 +4,9 @@
 #include <sys/mman.h>
 #include "types.h"
 #include "utils.h"
-#include "drvSensor.h"
+#include "utils.h"
+#include "bytecodes.h"
+#include "lms_2012.h"
 #include "drvSensorCst.h"
 #include "drvAnalogPort.h"
 
@@ -121,7 +123,7 @@ bool_t setType(int port, int type)
             setPinMode(port, CMD_SET|CMD_PIN1);
             break;
         default:
-			return FALSE;
+			return LEGO_FALSE;
         }
-        return TRUE;
+        return LEGO_TRUE;
     }

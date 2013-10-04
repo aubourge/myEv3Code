@@ -6,7 +6,6 @@
 
 void initDeviceIO();
 
-
 u8 getInConn(int port);
 u8 getInDcm(int port);
 u16 getShort(int offset);
