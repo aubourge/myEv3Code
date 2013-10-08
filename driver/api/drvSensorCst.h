@@ -5,6 +5,7 @@
      * Colors used as the output value when in full mode. Values are
      * compatible with LEGO firmware.
      */
+#if 0
 enum sensorColor {
     BLACK = 1,
     BLUE = 2,
@@ -13,6 +14,7 @@ enum sensorColor {
     RED = 5,
     WHITE = 6,
 };
+#endif
 
 enum sensorRawColorIdx {
     /** Color sensor data RED value index. */

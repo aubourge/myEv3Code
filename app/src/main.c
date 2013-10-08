@@ -118,7 +118,7 @@ int _fileRd;
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/mman.h>
-#include <os.h>
+//#include <sys/os.h>
 #include "lms2012.h"
 //The ports are designated as PORT_NUMBER-1
 const char PORT = 0x0;
@@ -144,8 +144,8 @@ int main()
 	}
 
 	for(i = 0;i<MAX_SAMPLES;i++) {
-		printf("UART Value: %d\n", (unsigned char)pUart->Raw[PORT][pUart->Actual[PORT]][0]);
-		os.sleep(1,0);
+		printf("UART Value: %c\n", (char)pUart->Raw[(int)PORT][(int)pUart->Actual[(int)PORT]][0]);
+		sleep(1);
 	}
 
 	// Close the device file

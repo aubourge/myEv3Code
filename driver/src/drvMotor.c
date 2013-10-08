@@ -105,6 +105,7 @@ void motorStop(char portMap, u8 brake)
 }
 
 
+#if O // Not working
 u8 motorGetType(char portMap)
 {
 	char cmd[2];
@@ -118,6 +119,7 @@ u8 motorGetType(char portMap)
 	return out;
 
 }
+#endif
 
 struct motorReadData motorRead(int port)
 {

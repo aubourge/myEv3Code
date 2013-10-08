@@ -6,7 +6,8 @@
 #include "utils.h"
 #include "utils.h"
 #include "bytecodes.h"
-#include "lms_2012.h"
+#include "lms2012.h"
+#include "drvSensor.h"
 #include "drvSensorCst.h"
 #include "drvAnalogPort.h"
 

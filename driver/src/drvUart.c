@@ -10,11 +10,12 @@
 
 int _mode[PORTS];
 u8 _devConnection[3*PORTS];
-bool_t drvUartInit = LEGO_FALSE;
+bool_t _drvUartInitialized = LEGO_FALSE;
 
-void drvUartInit()
+
+void drvUartInitialize()
 {
-	memset(_devConnection, 0, PORTS*sizeof(u8)):
+	memset(_devConnection, 0, PORTS*sizeof(u8));
 	_drvUartInitialized = LEGO_TRUE;
 }
 
